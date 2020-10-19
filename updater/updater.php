@@ -1,6 +1,5 @@
 <?php
 //https://api.github.com/repos/Haruki1707/SavDaC/releases/latest
-//https://api.github.com/repos/KunoichiZ/lumaupdate/releases/latest
 
 $user = "KunoichiZ";
 $repo = "lumaupdate";
@@ -12,7 +11,7 @@ $actual = json_decode($actual, true);
 
     if($json != "Error"){
         if($json['tag_name'] != $actual['tag_name']){
-            Download();
+            Download($user, $repo, $json['tag_name']);
         }
     }
 
@@ -41,8 +40,8 @@ function Release($user, $repo){
     return $result;
 }
 
-function Download(){
-    $f = file_put_contents("updater/latest.zip", fopen("https://github.com/$user/$repo/archive/$tag_name.zip", 'r'), LOCK_EX);
+function Download($user, $repo, $tag_name){
+    $f = file_put_contents("latest.zip", fopen("https://github.com/$user/$repo/archive/$tag_name.zip", 'r'), LOCK_EX);
         if(FALSE === $f)
             die("Couldn't write to file.");
         else
@@ -57,27 +56,36 @@ function extractzip(){
         Eraseall();
         $zip->extractTo("../");
         $zip->close();
+        unlink("latest.zip");
     } else {
     
     }
-    
+
     function Eraseall($dir = "../"){
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
-                if ($object != "." && $object != ".." && $object != "updater" && $object != ".git" && $object != "icons" && $object != "Users") {
+                if ($object != "." && $object != ".." && $object != "updater" && $object != ".git" && $object != "Icons" && $object != "Users") {
                     if (filetype($dir."/".$object) == "dir"){
-                        Eraseall($dir."/".$object);
-                        rmdir($dir."/".$object); 
+                        echo "../".$object."<br>";
+                        Eraseall("../".$object);
+                        rmdir("../".$object); 
                     }
-                    else 
-                        unlink($dir."/".$object);
+                    else{
+                        if ($dir == "../")
+                            $dir2 = "../";
+                        else 
+                            $dir2 = $dir."/";
+                    
+                        echo $dir2.$object."<br>"; 
+                        unlink($dir2.$object);
+                    }
                 }
             }
             reset($objects);
         }
     }
-    ?>';
+?>';
 
     if(file_exists("extract.php")){
         if(md5_file("extract.php") != md5($filestring)){
@@ -91,5 +99,5 @@ function extractzip(){
         fwrite($file, $filestring);
     }
 
-    header("Location: extract.php");
+    //header("Location: extract.php");
 }
