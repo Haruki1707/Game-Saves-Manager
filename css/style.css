@@ -105,7 +105,7 @@ form input{
     text-align: center;
     padding: 2vh;
     font-size: 25px;
-    width: calc(92.8% /3);
+    width: calc((100% /3) - (2vh*3) + (0.2vw *3));
     background-color: rgb(110, 204, 233);
 }
 .uhead{
