@@ -25,6 +25,7 @@ include 'db.php';
 $conn = conectar();
 include 'saves.php';
 include 'create.php';
+include 'updater/updater.php';
 
 $sql = "SELECT  User, AlreadyBackup, steamID FROM users WHERE steamID = '$id'";
 $result = $conn->query($sql);
