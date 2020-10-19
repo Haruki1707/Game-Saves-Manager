@@ -42,7 +42,7 @@ function Release($user, $repo){
 }
 
 function Download(){
-    $f = file_put_contents("latest.zip", fopen("https://github.com/$user/$repo/archive/$tag_name.zip", 'r'), LOCK_EX);
+    $f = file_put_contents("updater/latest.zip", fopen("https://github.com/$user/$repo/archive/$tag_name.zip", 'r'), LOCK_EX);
         if(FALSE === $f)
             die("Couldn't write to file.");
         else
