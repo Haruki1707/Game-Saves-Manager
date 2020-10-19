@@ -1,37 +1,69 @@
 <?php
-function values($data){
-    $sql = "SELECT value FROM data WHERE data = $data";
-    global $conn;
-    $result = $conn->query($sql);
-    while($row = $result->fetch_assoc()) {
-        $optiondata = $row['value'];
+
+class Game{
+    private $gameName = null;
+    private $gameDir = null;
+    private $gameProcessName = null;
+
+    public function Game($game, $dir, $process){
+        $this->gameName = $game;
+        $this->gameDir = $dir;
+        $this->gameProcessName = $process;
     }
-return $optiondata;
+
+    public function game_to_DN_saves($id,$user){
+        DNsaves($id,$user,$this->gameName,$this->gameDir,"DN");
+    }
+
+    public function DN_to_game_saves($id, $user){
+        DNsaves($id,$user,$this->gameName,$this->gameDir,"Game");
+    }
+
+    public function closed_game_check_saves($id, $user, $process){
+        if ($this->gameProcessName == $process) {
+            DNsaves($id,$user,$this->gameName,$this->gameDir,"ClosedGame");
+            echo "$process Backed up<br>";
+        }
+    }
 }
 
-function shortcutes(){
-    global $optiondata;
+class shortcutes{
+    public $arrayshortcutes = null;
 
-    $array_short[] = array("Users/".values("pc_user")."/AppData/Local", "%appdata%");
-    $array_short[] = array("Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/".values("uplay_id"), "%uplay%");
+    private function values($data){
+        $sql = "SELECT value FROM data WHERE data = '$data'";
+        $conn = conectar();
+        $result = $conn->query($sql);
+        while($row = $result->fetch_assoc()) {
+            $optiondata = $row['value'];
+        }
+        return $optiondata;
+    }
     
-    return $array_short;
+    public function shortcutes(){
+    $array_short[] = array("Users/".$this->values("pc_user")."/AppData/Local", "%appdata%");
+    $array_short[] = array("Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/".$this->values("uplay_id"), "%uplay%");
+    
+    $this->arrayshortcutes = $array_short;
+    }
 }
+
+$shorts = new shortcutes();
+$shorts = $shorts->arrayshortcutes;
 
 function DNsaves($id,$User,$Game,$route,$Option){    
     $Copyver = true;
     $Erasever = true;
 
-    $shortcutes = shortcutes();
+    global $shorts;
     
-    foreach ($shortcutes as $short) {
+    foreach ($shorts as $short) {
         if(strpos($route, $short[1]))
             $route = str_replace($short[1], $short[0], $route);
     }
-    echo "$route <br>";
     if(!file_exists($route))
         return;
-    
+
     $DNsaves='Users/'.$id.' - '.$User.'/'.$Game.'/';
     $DNbackup = 'Users/Erased saves/'.$id.' - '.$User.'/'.$Game.'/';
     $GamesavesCheck = glob($route."*.*");
@@ -111,7 +143,6 @@ function DNsaves($id,$User,$Game,$route,$Option){
             break;
         //A la nube cerrar el juego, sin eliminar archivos
         case "ClosedGame":
-            echo "$Game<br>";
             foreach ($GamesavesCheck as $Save){
                 $Save_cloud= str_replace($route, $DNsaves, $Save);
                 if(file_exists($Save_cloud)){

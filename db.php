@@ -1,6 +1,6 @@
 <?php
     //!!!!!
-    //Here from below are server things
+    //Here are server things
     //Don't touch anything!!!!!!!!!!!!! (Unless you know what you are doing)
     //!!!!!
 
