@@ -24,6 +24,8 @@ class Game{
             DNsaves($id,$user,$this->gameName,$this->gameDir,"ClosedGame");
             echo "$process Backed up<br>";
         }
+        elseif($process == null)
+            DNsaves($id,$user,$this->gameName,$this->gameDir,"ClosedGame");
     }
 }
 
