@@ -13,6 +13,12 @@ $actual = json_decode($actual, true);
         if($json['tag_name'] != $actual['tag_name'] && $json['prerelease'] == "false"){
             Download($user, $repo, $json['tag_name']);
         }
+        else {
+            echo "Updated";
+        }
+    }
+    else {
+        echo "Unable to check";
     }
 
 function Release($user, $repo){
@@ -57,8 +63,9 @@ function extractzip(){
         $zip->extractTo("../");
         $zip->close();
         unlink("latest.zip");
+        echo "Succesfull";
     } else {
-    
+        echo "Failed";
     }
 
     function Eraseall($dir = "../"){
