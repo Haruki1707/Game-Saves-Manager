@@ -113,5 +113,5 @@ function extractzip(){
         fwrite($file, $filestring);
     }
 
-    header("Location: extract.php?version=".$json['tag_name']);
+    //header("Location: extract.php?version=".$json['tag_name']);
 }
