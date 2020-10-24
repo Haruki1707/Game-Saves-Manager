@@ -10,4 +10,4 @@ to make a copy of the folder with the save data.
 We also highly recommend downloading C# automate client.
 This connects directly with Steam, making all without user interaction.
 
-Link to Game-Saves-Manager_CLIENT_: |Available in the future|
+Link to Game-Saves-Manager [CLIENT]: |Available in the future|
