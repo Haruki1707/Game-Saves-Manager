@@ -15,7 +15,7 @@ $actual = json_decode($actual, true);
 
     if($json != "Error"){
         if($json['tag_name'] != $actual['tag_name'] && $json['prerelease'] == false){
-            if($update)
+            if($update == true)
                 Download($user, $repo, $json['tag_name']);
             else
                 echo "Update Available";
