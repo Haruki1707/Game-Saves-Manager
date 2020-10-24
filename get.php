@@ -1,9 +1,11 @@
 <?php
-if(isset($_GET["data"])){
+if(isset($_GET["data"]))
     $data=$_GET["data"];
-}else{
+else
     $data=false;
-}
+
+if(isset($_GET{"image"}))
+    $image = $_GET["image"];
 
 include 'db.php';
 $conn = conectar();
@@ -16,15 +18,8 @@ switch ($data) {
         while($row = $result->fetch_assoc()) {
             $count++;
         }
-        break;
+    break;
 
-    case 'user':
-        $sql = "SELECT User FROM users WHERE AlreadyBackup = 0";
-        $result = $conn->query($sql);
-        while($row = $result->fetch_assoc()) {
-            echo $row["User"];
-        }
-        break;
     case 'games':
         $lastposition = -1;
 
@@ -39,7 +34,8 @@ switch ($data) {
             if($game != $games[$lastposition])
                 echo "|";
         }  
-        break;
+    break;
+
     case 'Box':
         $sql = "SELECT value FROM data WHERE data = 'box_seconds'";
         $result = $conn->query($sql);
@@ -48,7 +44,8 @@ switch ($data) {
         }
 
         echo $seconds;
-        break;
+    break;
+
     case 'Notification':
         $sql = "SELECT value FROM data WHERE data = 'notify_seconds'";
         $result = $conn->query($sql);
@@ -57,7 +54,8 @@ switch ($data) {
         }
 
         echo $seconds;
-        break;
+    break;
+
     case 'Min':
         $sql = "SELECT value FROM data WHERE data = 'game_check/min'";
         $result = $conn->query($sql);
@@ -66,14 +64,49 @@ switch ($data) {
         }
     
         echo $min;
-        break;
+    break;
 
-    default:
-        if(file_exists("Icons/$data.jpg"))
+    case "image":
+        $file_out = "Icons/$image.jpg";
+
+        if (!file_exists($file_out)) {
+            $sql = "SELECT User, steamID FROM users WHERE AlreadyBackup = 0";
+            $result = $conn->query($sql);
+            while($row = $result->fetch_assoc()) {
+                $user = $row["User"];
+                $ID = $row["steamID"];
+            }
+            $file_out = "Users/$ID - $user/$ID.jpg";
+        }
+
+        $image_info = getimagesize($file_out);
+
+        //Set the content-type header as appropriate
+        header('Content-Type: ' . $image_info['mime']);
+
+        //Write the image bytes to the client
+        echo file_get_contents($file_out);
+        return;
+    break;
+
+    case "check":
+        if($image == "user"){
+            $sql = "SELECT User FROM users WHERE AlreadyBackup = 0";
+            $result = $conn->query($sql);
+            while($row = $result->fetch_assoc()) {
+                echo $row["User"];
+            }
+        }
+        elseif (file_exists("Icons/$image.jpg")) {
             echo "Sincronizado";
+        }
         else
-            echo 'Select correct data to request';
-        break;
+            echo "!Exist";
+    break;
+    
+    default:
+        echo 'Select correct data to request';
+    break;
 }
 
 ?>

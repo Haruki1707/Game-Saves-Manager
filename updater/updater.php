@@ -1,8 +1,8 @@
 <?php
-//https://api.github.com/repos/Haruki1707/SavDaC/releases/latest
+//https://api.github.com/repos/Haruki1707/Game-Saves-Manager/releases/latest
 
 $user = "Haruki1707";
-$repo = "lumaupdate";
+$repo = "Game-Saves-Manager";
 
 $json = Release($user, $repo);
 
@@ -10,7 +10,7 @@ $actual = file_get_contents("info.json");
 $actual = json_decode($actual, true);
 
     if($json != "Error"){
-        if($json['tag_name'] != $actual['tag_name']){
+        if($json['tag_name'] != $actual['tag_name'] && $json['prerelease'] == "false"){
             Download($user, $repo, $json['tag_name']);
         }
     }
