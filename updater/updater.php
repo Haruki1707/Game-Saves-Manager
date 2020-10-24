@@ -63,7 +63,9 @@ function extractzip($tag_name){
     else{
         return;
     }
-    
+    $desdir = "../";
+    $frodir = "Game-Saves-Manager-$version";
+
         $zip = new ZipArchive;
         $res = $zip->open("latest.zip");
         if ($res === TRUE) {
@@ -71,12 +73,28 @@ function extractzip($tag_name){
             $zip->extractTo(".");
             $zip->close();
             unlink("latest.zip");
-            rename("Game-Saves-Manager-$version", "../../Game-Saves-Manager");
+
+            CopyAll($frodir);
+            EraseUpdate($frodir);
+
             echo "Succesfull";
         } else {
             echo "Failed";
         }
     
+        function EraseUpdate($dir){
+            if(is_dir($dir)){
+                $objects = scandir($dir);
+                foreach ($objects as $object) {
+                    if ($object != "." && $object != "..") {
+                        rmdir($dir."/".$object);
+                    }
+                }
+                rmdir($dir);
+                reset($objects);
+            }
+        }
+
         function Eraseall($dir = "../"){
             if (is_dir($dir)) {
                 $objects = scandir($dir);
@@ -91,7 +109,7 @@ function extractzip($tag_name){
                                 $dir2 = "../";
                             else 
                                 $dir2 = $dir."/";
-                        
+                            
                             unlink($dir2.$object);
                         }
                     }
@@ -99,7 +117,40 @@ function extractzip($tag_name){
                 reset($objects);
             }
         }
-    ?>';
+
+        function CopyAll($dir){
+            global $desdir;
+            global $frodir;
+
+            if(is_dir($dir)){
+                $objects = scandir($dir);
+                foreach ($objects as $object) {
+                    if($object != "." && $object != ".."){
+                        if (filetype($dir."/".$object) == "dir") {
+                            if(!is_dir("$desdir/$object"))
+                                mkdir("$desdir/$object", 0777);
+
+                            CopyAll($dir."/".$object);
+                        }
+                        else {
+                            if($dir != $frodir){
+                                $dir2 = str_replace($frodir."/", $desdir, $dir."/");
+                            }
+                            else {
+                                $dir2 = $desdir;
+                            }
+
+                            if(!rename("$dir/$object", "$dir2$object")){
+                                unlink("$dir2$object");
+                                rename("$dir/$object", "$dir2$object");
+                            }
+                        }
+                    }
+                }
+                reset($objects);
+            }
+        }
+?>';
 
     if(file_exists("extract.php")){
         if(md5_file("extract.php") != md5($filestring)){
@@ -113,5 +164,5 @@ function extractzip($tag_name){
         fwrite($file, $filestring);
     }
 
-    //header("Location: extract.php?version=$tag_name");
+    header("Location: extract.php?version=$tag_name");
 }
