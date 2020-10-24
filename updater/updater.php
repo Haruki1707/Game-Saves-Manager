@@ -1,7 +1,7 @@
 <?php
 //https://api.github.com/repos/Haruki1707/SavDaC/releases/latest
 
-$user = "KunoichiZ";
+$user = "Haruki1707";
 $repo = "lumaupdate";
 
 $json = Release($user, $repo);
