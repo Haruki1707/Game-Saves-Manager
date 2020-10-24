@@ -106,5 +106,5 @@ function extractzip(){
         fwrite($file, $filestring);
     }
 
-    header("Location: extract.php");
+    //header("Location: extract.php");
 }
