@@ -56,43 +56,50 @@ function Download($user, $repo, $tag_name){
 
 function extractzip(){
     $filestring = '<?php
-    $zip = new ZipArchive;
-    $res = $zip->open("latest.zip");
-    if ($res === TRUE) {
-        Eraseall();
-        $zip->extractTo("../");
-        $zip->close();
-        unlink("latest.zip");
-        echo "Succesfull";
-    } else {
-        echo "Failed";
+    if(isset($_GET["version"])){
+        $version = $_GET["version"];
+        $version = substr($version, 1);
     }
-
-    function Eraseall($dir = "../"){
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != ".." && $object != "updater" && $object != ".git" && $object != "Icons" && $object != "Users") {
-                    if (filetype($dir."/".$object) == "dir"){
-                        echo "../".$object."<br>";
-                        Eraseall("../".$object);
-                        rmdir("../".$object); 
-                    }
-                    else{
-                        if ($dir == "../")
-                            $dir2 = "../";
-                        else 
-                            $dir2 = $dir."/";
-                    
-                        echo $dir2.$object."<br>"; 
-                        unlink($dir2.$object);
+    else{
+        return;
+    }
+    
+        $zip = new ZipArchive;
+        $res = $zip->open("latest.zip");
+        if ($res === TRUE) {
+            Eraseall();
+            $zip->extractTo(".");
+            $zip->close();
+            unlink("latest.zip");
+            rename("Game-Saves-Manager-$version", "../../Game-Saves-Manager");
+            echo "Succesfull";
+        } else {
+            echo "Failed";
+        }
+    
+        function Eraseall($dir = "../"){
+            if (is_dir($dir)) {
+                $objects = scandir($dir);
+                foreach ($objects as $object) {
+                    if ($object != "." && $object != ".." && $object != "updater" && $object != ".git" && $object != "Icons" && $object != "Users" && $object != "Rubbish") {
+                        if (filetype($dir."/".$object) == "dir"){
+                            Eraseall("../".$object);
+                            rmdir("../".$object); 
+                        }
+                        else{
+                            if ($dir == "../")
+                                $dir2 = "../";
+                            else 
+                                $dir2 = $dir."/";
+                        
+                            unlink($dir2.$object);
+                        }
                     }
                 }
+                reset($objects);
             }
-            reset($objects);
         }
-    }
-?>';
+    ?>';
 
     if(file_exists("extract.php")){
         if(md5_file("extract.php") != md5($filestring)){
@@ -106,5 +113,5 @@ function extractzip(){
         fwrite($file, $filestring);
     }
 
-    //header("Location: extract.php");
+    header("Location: extract.php?version=".$json['tag_name']);
 }
