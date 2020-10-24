@@ -73,7 +73,7 @@ class SteamUser{
 
 function sqlerror($User, $Error){
     $conn = conectar();
-    $sql = 'INSERT INTO errors (user,Game,error) VALUES ("'.$User.'","'.$Error.'","by STEAMID64")';
+    $sql = 'INSERT INTO errors (user,Game,error) VALUES ("'.$User.'","by STEAMID64","'.$Error.'")';
     $conn->query($sql);
 }
 ?>
