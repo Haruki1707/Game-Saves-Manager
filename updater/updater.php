@@ -10,11 +10,11 @@ $actual = file_get_contents("info.json");
 $actual = json_decode($actual, true);
 
     if($json != "Error"){
-        if($json['tag_name'] != $actual['tag_name'] && $json['prerelease'] == "false"){
+        if($json['tag_name'] != $actual['tag_name'] && $json['prerelease'] == false){
             Download($user, $repo, $json['tag_name']);
         }
-        else {
-            echo "Updated";
+        else { 
+            echo "Already Updated";
         }
     }
     else {
@@ -51,10 +51,10 @@ function Download($user, $repo, $tag_name){
         if(FALSE === $f)
             die("Couldn't write to file.");
         else
-            extractzip();
+            extractzip($tag_name);
 }
 
-function extractzip(){
+function extractzip($tag_name){
     $filestring = '<?php
     if(isset($_GET["version"])){
         $version = $_GET["version"];
@@ -113,5 +113,5 @@ function extractzip(){
         fwrite($file, $filestring);
     }
 
-    //header("Location: extract.php?version=".$json['tag_name']);
+    header("Location: extract.php?version=$tag_name");
 }
