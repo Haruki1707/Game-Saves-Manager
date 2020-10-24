@@ -164,5 +164,5 @@ function extractzip($tag_name){
         fwrite($file, $filestring);
     }
 
-    header("Location: extract.php?version=$tag_name");
+    //header("Location: extract.php?version=$tag_name");
 }
