@@ -1,5 +1,9 @@
 <?php
 //https://api.github.com/repos/Haruki1707/Game-Saves-Manager/releases/latest
+$update = false;
+if(isset($_GET['update'])){
+    $update = $_GET['update'];
+}
 
 $user = "Haruki1707";
 $repo = "Game-Saves-Manager";
@@ -11,7 +15,10 @@ $actual = json_decode($actual, true);
 
     if($json != "Error"){
         if($json['tag_name'] != $actual['tag_name'] && $json['prerelease'] == false){
-            Download($user, $repo, $json['tag_name']);
+            if($update)
+                Download($user, $repo, $json['tag_name']);
+            else
+                echo "Update Available";
         }
         else { 
             echo "Already Updated";
