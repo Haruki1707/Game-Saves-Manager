@@ -142,9 +142,10 @@ switch($option){
         if(strpos($dir, "\\"))
             $dir = str_replace("\\", "/", $dir);
 
-        $shortcutes = shortcutes();
+        $shorts = new shortcutes();
+        $shorts = $shorts->arrayshortcutes;
 
-        foreach ($shortcutes as $short) {
+        foreach ($shorts as $short) {
             if(strpos($dir, $short[0]))
                 $dir = str_replace($short[0], $short[1], $dir);
         }

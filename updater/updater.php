@@ -1,4 +1,5 @@
 <?php
+//https://raw.githubusercontent.com/Haruki1707/Game-Saves-Manager/beta/UI.php
 //https://api.github.com/repos/Haruki1707/Game-Saves-Manager/releases/latest
 $update = false;
 if(isset($_GET['update'])){
